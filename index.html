@@ -4,7 +4,14 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#0a0a0c" />
+<meta name="description" content="Calculate the 24 carat equivalent, making charges, GST and the final payable amount for gold jewellery." />
 <title>Gold Jewellery Price Calculator</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Gold Calc" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <style>
   :root {
     --bg: #0a0a0c;
@@ -642,6 +649,14 @@
 
       calculate();
     })();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () {
+          /* offline support is a bonus; the calculator works without it */
+        });
+      });
+    }
   </script>
 </body>
 </html>
