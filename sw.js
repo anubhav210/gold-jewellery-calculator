@@ -1,5 +1,5 @@
 /* Minimal service worker so the calculator works offline and is installable. */
-var CACHE = "gold-calc-v1";
+var CACHE = "gold-calc-v2";
 var ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", function (event) {

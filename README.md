@@ -40,11 +40,12 @@ other retailer-specific add-ons.
 ## Project structure
 
 ```
-index.html     # markup, styles and calculator logic (no build step, no dependencies)
-manifest.json  # PWA manifest (name, icons, theme colours)
-sw.js          # service worker for offline caching
-icon-192.png   # app icon
-icon-512.png   # app icon
+index.html       # the app: light theme, lite build (no build step, no dependencies)
+index-dark.html  # original dark theme version
+manifest.json    # PWA manifest (name, icons, theme colours)
+sw.js            # service worker for offline caching
+icon-192.png     # app icon
+icon-512.png     # app icon
 ```
 
 ## Run locally
