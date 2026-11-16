@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#fbfaf7" />
+<meta name="description" content="Calculate gold jewellery price: 24 carat equivalent, making charges, GST and final amount." />
+<title>Gold Price Calculator — Light</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --card: #ffffff;
+    --line: #e6e1d6;
+    --text: #2b2620;
+    --muted: #7a736a;
+    --gold: #a97f22;
+    --gold-soft: #f6edd6;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 40px 16px 56px;
+    color: var(--text);
+    font-family: "Segoe UI", ui-sans-serif, system-ui, -apple-system, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app { width: 100%; max-width: 900px; }
+
+  h1 {
+    margin: 0 0 6px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 500;
+    letter-spacing: -.01em;
+  }
+  h1 span { color: var(--gold); }
+  .sub { margin: 0 0 24px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .card {
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--card);
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .card-head h2 {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .pill {
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: var(--gold-soft);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .reset {
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .reset:hover { color: var(--gold); border-color: var(--gold); }
+
+  .fields { display: grid; gap: 14px; }
+  .field { display: block; }
+  .field.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .control { position: relative; display: flex; align-items: center; }
+
+  .control input,
+  .control select {
+    width: 100%;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .control input { padding: 0 34px 0 12px; }
+  .control input.has-affix { padding-left: 30px; }
+  .control select { padding: 0 12px; cursor: pointer; background: var(--bg); }
+
+  .control input:focus,
+  .control select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(169, 127, 34, .15);
+  }
+
+  .affix, .suffix {
+    position: absolute;
+    color: var(--muted);
+    font-size: 13px;
+    pointer-events: none;
+  }
+  .affix { left: 11px; color: var(--gold); font-weight: 700; }
+  .suffix { right: 12px; }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+  .k24 {
+    margin-bottom: 14px;
+    padding: 14px;
+    border: 1px solid #eddfba;
+    border-radius: 10px;
+    background: var(--gold-soft);
+  }
+  .k24-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #8a6c22;
+  }
+  .k24-value {
+    margin-top: 4px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(24px, 3.4vw, 30px);
+    color: #7c5c14;
+    font-variant-numeric: tabular-nums;
+  }
+  .k24-sub { margin-top: 3px; font-size: 12px; color: #8a7a52; }
+
+  .row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ece3;
+    font-size: 14px;
+  }
+  .row:last-child { border-bottom: none; }
+  .row span:last-child { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .row.subtotal { font-weight: 700; color: #1d1913; }
+
+  .total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: linear-gradient(120deg, #f2d68c, #dcb958);
+    color: #241c06;
+  }
+  .total small {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    opacity: .75;
+  }
+  .total-value {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 700;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note { margin: 18px 0 0; font-size: 12px; line-height: 1.6; color: var(--muted); }
+
+  @media (max-width: 760px) {
+    body { padding: 28px 14px 44px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 400px) {
+    .field.two { grid-template-columns: 1fr; }
+    .total { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Gold <span>Price Calculator</span></h1>
+      <p class="sub">Gold rate, carat and weight in — 24K equivalent, GST and final amount out.</p>
+    </header>
+
+    <div class="grid">
+      <section class="card" aria-labelledby="in-title">
+        <div class="card-head">
+          <h2 id="in-title">Details</h2>
+          <button type="button" id="reset" class="reset">Reset</button>
+        </div>
+
+        <div class="fields">
+          <label class="field" for="rate">
+            <span class="label">Gold rate per 10 g</span>
+            <span class="control">
+              <span class="affix">₹</span>
+              <input id="rate" class="has-affix" type="number" min="0" step="100" inputmode="decimal" value="135000" />
+            </span>
+          </label>
+
+          <div class="field two">
+            <label for="carat">
+              <span class="label">Carat</span>
+              <span class="control">
+                <select id="carat">
+                  <option value="24">24K</option>
+                  <option value="22">22K</option>
+                  <option value="20" selected>20K</option>
+                  <option value="18">18K</option>
+                  <option value="14">14K</option>
+                </select>
+              </span>
+            </label>
+
+            <label for="weight">
+              <span class="label">Weight</span>
+              <span class="control">
+                <input id="weight" type="number" min="0" step="any" inputmode="decimal" value="10" />
+                <span class="suffix">g</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="field two">
+            <label for="making">
+              <span class="label">Making charges</span>
+              <span class="control">
+                <input id="making" type="number" min="0" step="any" inputmode="decimal" value="13" />
+                <span class="suffix">%</span>
+              </span>
+            </label>
+
+            <label for="gst">
+              <span class="label">GST</span>
+              <span class="control">
+                <input id="gst" type="number" min="0" step="any" inputmode="decimal" value="3" />
+                <span class="suffix">%</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="out-title">
+        <div class="card-head">
+          <h2 id="out-title">Breakdown</h2>
+          <span class="pill" id="caratPill">20K</span>
+        </div>
+
+        <div class="k24">
+          <div class="k24-label">24 carat equivalent · per 10 g</div>
+          <div class="k24-value" id="rate24">₹1,62,000.00</div>
+          <div class="k24-sub" id="rate24Sub">₹16,200.00 per gram</div>
+        </div>
+
+        <div class="row"><span>Gold value</span><span id="goldValue">₹1,35,000.00</span></div>
+        <div class="row"><span>Making charges</span><span id="makingAmount">₹17,550.00</span></div>
+        <div class="row subtotal"><span>Subtotal</span><span id="subtotal">₹1,52,550.00</span></div>
+        <div class="row"><span>GST</span><span id="gstAmount">₹4,576.50</span></div>
+
+        <div class="total">
+          <div>
+            <small>Final amount</small>
+            <small id="totalSub">incl. 3% GST</small>
+          </div>
+          <div class="total-value" id="total">₹1,57,126.50</div>
+        </div>
+      </section>
+    </div>
+
+    <p class="note" id="note">
+      Gold value = rate ÷ 10 × weight. 24K equivalent = rate × 24 ÷ carat. GST applies to gold value + making charges.
+    </p>
+  </div>
+
+  <script>
+    (function () {
+      var ids = ["rate", "carat", "weight", "making", "gst", "caratPill", "rate24", "rate24Sub",
+                 "goldValue", "makingAmount", "subtotal", "gstAmount", "total", "totalSub", "reset"];
+      var el = {};
+      ids.forEach(function (id) { el[id] = document.getElementById(id); });
+
+      var DEFAULTS = { rate: 135000, carat: "20", weight: 10, making: 13, gst: 3 };
+
+      var money = new Intl.NumberFormat("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      var num = function (v) {
+        var n = parseFloat(v);
+        return Number.isFinite(n) && n > 0 ? n : 0;
+      };
+      var fmt = function (v) { return "\u20B9" + money.format(v); };
+
+      function calculate() {
+        var rate = num(el.rate.value);
+        var carat = parseFloat(el.carat.value) || 24;
+        var weight = num(el.weight.value);
+        var makingPct = num(el.making.value);
+        var gstPct = num(el.gst.value);
+
+        var goldValue = (rate / 10) * weight;
+        var making = goldValue * makingPct / 100;
+        var subtotal = goldValue + making;
+        var gst = subtotal * gstPct / 100;
+        var rate24 = rate * 24 / carat;
+
+        el.rate24.textContent = fmt(rate24);
+        el.rate24Sub.textContent = fmt(rate24 / 10) + " per gram";
+        el.caratPill.textContent = carat + "K";
+        el.goldValue.textContent = fmt(goldValue);
+        el.makingAmount.textContent = fmt(making);
+        el.subtotal.textContent = fmt(subtotal);
+        el.gstAmount.textContent = fmt(gst);
+        el.total.textContent = fmt(subtotal + gst);
+        el.totalSub.textContent = "incl. " + gstPct + "% GST";
+      }
+
+      ["rate", "weight", "making", "gst"].forEach(function (id) {
+        el[id].addEventListener("input", calculate);
+      });
+      el.carat.addEventListener("change", calculate);
+
+      el.reset.addEventListener("click", function () {
+        el.rate.value = DEFAULTS.rate;
+        el.carat.value = DEFAULTS.carat;
+        el.weight.value = DEFAULTS.weight;
+        el.making.value = DEFAULTS.making;
+        el.gst.value = DEFAULTS.gst;
+        calculate();
+        el.rate.focus();
+      });
+
+      calculate();
+    })();
+  </script>
+</body>
+</html>
